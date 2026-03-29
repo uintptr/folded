@@ -1,0 +1,13 @@
+{
+  "manifest_version": 2,
+  "name": "Folded – Readable old.reddit.com",
+  "version": "1.0.0",
+  "description": "Makes old.reddit.com easier to read.",
+  "content_scripts": [
+    {
+      "matches": ["*://old.reddit.com/*"],
+      "css": ["content.css"],
+      "run_at": "document_start"
+    }
+  ]
+}

@@ -1,0 +1,326 @@
+/* ============================================================
+   Folded — readable old.reddit.com (dark theme)
+   ============================================================ */
+
+/* --- Colour palette (change these to retheme everything) --- */
+:root {
+  --bg:          #1e1e1e;
+  --bg-raised:   #252526;
+  --bg-hover:    #2a2d2e;
+  --border:      #3e3e42;
+  --text:        #d4d4d4;
+  --text-muted:  #9d9d9d;
+  --text-faint:  #6a6a6a;
+  --link:        #4fc1ff;
+  --link-vis:    #c586c0;
+  --accent:      #4fc1ff;
+}
+
+/* --- Base -------------------------------------------------- */
+
+html, body {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+/* --- Layout: wider, centred content ------------------------ */
+
+.side {
+  width: 260px !important;
+}
+
+#siteTable,
+.linklisting {
+  width: 100% !important;
+}
+
+.two-column .content {
+  margin-right: 280px !important;
+}
+
+body > .content {
+  max-width: 100%;
+  margin: 0;
+  padding: 0 16px;
+}
+
+/* --- Typography -------------------------------------------- */
+
+body,
+.md,
+.md p,
+.comment .md,
+.usertext-body .md {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+/* Post titles */
+.title a.title,
+p.title a.title {
+  font-size: 17px !important;
+  line-height: 1.4 !important;
+  font-weight: 600;
+  color: var(--text) !important;
+}
+
+.title a.title:visited {
+  color: var(--text-muted) !important;
+}
+
+/* Domain tag */
+span.domain a {
+  font-size: 12px;
+  color: var(--text-faint) !important;
+}
+
+/* --- Links ------------------------------------------------- */
+
+a, a:link {
+  color: var(--link) !important;
+}
+
+a:visited {
+  color: var(--link-vis) !important;
+}
+
+/* --- Post listings ----------------------------------------- */
+
+.thing.link {
+  padding: 8px 8px 8px 4px;
+  border-bottom: 1px solid var(--border);
+  background: transparent !important;
+}
+
+.thing.link:hover {
+  background-color: var(--bg-hover) !important;
+}
+
+/* Vote arrows */
+.arrow {
+  opacity: 0.4;
+}
+
+.arrow:hover {
+  opacity: 1;
+}
+
+.score {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Tagline / meta row */
+.tagline {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.tagline a,
+.tagline .author {
+  color: var(--text-muted) !important;
+  font-weight: 500;
+}
+
+.tagline .subreddit {
+  font-weight: 700;
+  color: var(--accent) !important;
+}
+
+/* --- Comments --------------------------------------------- */
+
+.commentarea .md {
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.comment {
+  padding: 6px 0 2px 0;
+  border: none;
+  background: transparent !important;
+}
+
+/* Indent guide lines */
+.comment .child {
+  border-left: 2px solid var(--border);
+  margin-left: 8px;
+  padding-left: 8px;
+}
+
+.comment .child:hover > .comment > .entry {
+  border-left-color: var(--accent);
+}
+
+.comment .author {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--text) !important;
+}
+
+.comment .tagline {
+  margin-bottom: 4px;
+}
+
+/* Collapse button */
+.expand {
+  color: var(--text-faint);
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0 4px;
+  margin-right: 6px;
+}
+
+/* Comment action links */
+.flat-list.buttons li a {
+  color: var(--text-faint) !important;
+}
+
+.flat-list.buttons li a:hover {
+  color: var(--text-muted) !important;
+}
+
+/* --- Self post text --------------------------------------- */
+
+.usertext-body,
+.usertext-body .md,
+.expando {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+/* --- Sidebar ---------------------------------------------- */
+
+.side {
+  font-size: 13px;
+}
+
+.side .subreddit-description-section .md {
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.side .titlebox,
+.side .spacer,
+.side .sidecontentbox {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 10px;
+  background: var(--bg-raised) !important;
+  padding: 10px 12px;
+}
+
+.side .title,
+.side h3,
+.side h5 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+/* --- Header ----------------------------------------------- */
+
+#header,
+#header-bottom-left,
+#header-bottom-right {
+  background: var(--bg-raised) !important;
+  border-bottom: 2px solid var(--border) !important;
+  box-shadow: none !important;
+}
+
+#header * {
+  color: var(--text-muted) !important;
+}
+
+#header a:hover {
+  color: var(--text) !important;
+}
+
+#header-bottom-left .tabmenu li a {
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent !important;
+}
+
+#header-bottom-left .tabmenu li.selected a {
+  color: var(--text) !important;
+  background: var(--bg) !important;
+  border-color: var(--border) !important;
+}
+
+/* --- Search bar ------------------------------------------- */
+
+#search input[type="text"] {
+  font-size: 13px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  padding: 4px 8px;
+}
+
+/* --- Misc surfaces ---------------------------------------- */
+
+/* "More comments" links */
+.morecomments a {
+  color: var(--accent) !important;
+}
+
+/* Tables in posts */
+.md table th,
+.md table td {
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+}
+
+.md table th {
+  background: var(--bg-raised);
+}
+
+/* Code blocks */
+.md pre,
+.md code {
+  background: var(--bg-raised) !important;
+  color: #c9d1d9 !important;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+/* Blockquotes */
+.md blockquote {
+  border-left: 3px solid var(--border);
+  color: var(--text-muted);
+  margin-left: 0;
+  padding-left: 12px;
+}
+
+/* --- Hide clutter ----------------------------------------- */
+
+.promoted-link,
+.ad-container,
+#shown_ads {
+  display: none !important;
+}
+
+.cloud-border,
+.XPromoDisplay {
+  display: none !important;
+}
+
+/* "Service Workers not compatible" warning */
+.infobar {
+  display: none !important;
+}
+
+/* Footer */
+.footer-parent .col {
+  font-size: 11px;
+  color: var(--text-faint);
+}
