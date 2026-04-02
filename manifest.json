@@ -1,46 +1,45 @@
 {
-  "manifest_version": 2,
-  "name": "Folded",
-  "version": "2.0.2",
-  "description": "Customize any website with natural language using Claude.",
+    "manifest_version": 2,
+    "name": "Folded",
+    "version": "0.0.3",
+    "description": "Customize any website with natural language using Claude.",
 
-  "permissions": [
-    "storage",
-    "tabs",
-    "activeTab",
-    "<all_urls>"
-  ],
+    "permissions": ["storage", "tabs", "activeTab", "<all_urls>"],
 
-  "background": {
-    "scripts": ["shared/utils.js", "shared/storage.js", "background/background.js"],
-    "persistent": true
-  },
+    "background": {
+        "scripts": [
+            "shared/utils.js",
+            "shared/storage.js",
+            "background/background.js"
+        ],
+        "persistent": true
+    },
 
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content/content-bridge.js"],
-      "run_at": "document_start",
-      "all_frames": false
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content/content-bridge.js"],
+            "run_at": "document_start",
+            "all_frames": false
+        }
+    ],
+
+    "browser_action": {
+        "default_title": "Folded",
+        "default_icon": "icons/icon.svg"
+    },
+
+    "options_page": "options/options.html",
+
+    "content_security_policy": "script-src 'self'; object-src 'self'; connect-src https://api.anthropic.com;",
+
+    "icons": {
+        "48": "icons/icon.svg"
+    },
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "folded@uintptr"
+        }
     }
-  ],
-
-  "browser_action": {
-    "default_title": "Folded",
-    "default_icon": "icons/icon.svg"
-  },
-
-  "options_page": "options/options.html",
-
-  "content_security_policy": "script-src 'self'; object-src 'self'; connect-src https://api.anthropic.com;",
-
-  "icons": {
-    "48": "icons/icon.svg"
-  },
-
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "folded@uintptr"
-    }
-  }
 }
