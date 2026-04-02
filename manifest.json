@@ -1,13 +1,40 @@
 {
   "manifest_version": 2,
-  "name": "Folded – Readable old.reddit.com",
-  "version": "1.0.0",
-  "description": "Makes old.reddit.com easier to read.",
+  "name": "Folded",
+  "version": "2.0.0",
+  "description": "Customize any website with natural language using Claude.",
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "<all_urls>"
+  ],
+
+  "background": {
+    "scripts": ["shared/utils.js", "shared/storage.js", "background/background.js"],
+    "persistent": true
+  },
+
   "content_scripts": [
     {
-      "matches": ["*://old.reddit.com/*"],
-      "css": ["content.css"],
-      "run_at": "document_start"
+      "matches": ["<all_urls>"],
+      "js": ["content/content-bridge.js"],
+      "run_at": "document_start",
+      "all_frames": false
     }
-  ]
+  ],
+
+  "browser_action": {
+    "default_title": "Folded",
+    "default_icon": "icons/icon.svg"
+  },
+
+  "options_page": "options/options.html",
+
+  "content_security_policy": "script-src 'self'; object-src 'self'; connect-src https://api.anthropic.com;",
+
+  "icons": {
+    "48": "icons/icon.svg"
+  }
 }

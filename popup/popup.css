@@ -1,0 +1,190 @@
+:root {
+  --bg:           #111113;
+  --surface:      #1c1c1f;
+  --surface2:     #242428;
+  --border:       #2e2e33;
+  --text:         #e2e2e6;
+  --text-muted:   #666672;
+  --accent:       #4fc1ff;
+  --accent-hover: #76ceff;
+  --danger:       #f47067;
+  --success:      #4ec9b0;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 13px;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Header ── */
+header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  height: 44px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.hostname {
+  font-size: 12px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+#btn-settings {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 5px;
+  line-height: 1;
+}
+#btn-settings:hover { color: var(--text); background: var(--surface2); }
+
+/* ── Main states ── */
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+}
+main.hidden { display: none; }
+
+/* ── Textarea ── */
+textarea {
+  width: 100%;
+  height: 120px;
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-family: inherit;
+  line-height: 1.55;
+  resize: none;
+}
+textarea::placeholder { color: var(--text-muted); }
+textarea:focus { outline: none; border-color: var(--accent); }
+
+/* ── Buttons ── */
+button {
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 14px;
+  width: 100%;
+  transition: background 0.12s;
+}
+
+#btn-generate, #btn-save {
+  background: var(--accent);
+  color: #000;
+}
+#btn-generate:hover, #btn-save:hover { background: var(--accent-hover); }
+
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--border); }
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+.btn-row button { flex: 1; width: auto; }
+
+/* ── Progress bar ── */
+.progress-bar {
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.progress-bar-fill {
+  height: 100%;
+  width: 40%;
+  background: var(--accent);
+  border-radius: 2px;
+  animation: sweep 1.4s ease-in-out infinite;
+}
+@keyframes sweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+/* ── Stream output ── */
+#stream-output {
+  height: 120px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 11px;
+  font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-y: auto;
+}
+
+/* ── Review state ── */
+.preview-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(78, 201, 176, 0.1);
+  border: 1px solid rgba(78, 201, 176, 0.25);
+  color: var(--success);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+.spacer { flex: 1; }
+
+/* ── Notices ── */
+.warning, .error {
+  font-size: 12px;
+  border-radius: 7px;
+  padding: 8px 10px;
+  line-height: 1.4;
+}
+.warning { color: var(--danger); background: rgba(244,112,103,.08); border: 1px solid rgba(244,112,103,.2); }
+.error   { color: var(--danger); background: rgba(244,112,103,.08); border: 1px solid rgba(244,112,103,.2); }
+.warning a { color: var(--accent); text-decoration: underline; cursor: pointer; }
+
+.hidden { display: none !important; }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Folded — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="sidebar-header">
+        <span class="logo">Folded</span>
+      </div>
+      <ul id="rule-list"></ul>
+      <button id="btn-add">+ Add site</button>
+    </aside>
+
+    <main id="editor">
+      <div id="editor-empty">
+        <p>Select a site from the left, or click <strong>+ Add site</strong>.</p>
+      </div>
+
+      <div id="editor-form" class="hidden">
+        <div class="field-row">
+          <label for="field-hostname">Hostname</label>
+          <input id="field-hostname" type="text" placeholder="example.com">
+        </div>
+        <div class="field-row toggle-row">
+          <label for="field-enabled">Enabled</label>
+          <input id="field-enabled" type="checkbox" checked>
+        </div>
+        <div class="field-row">
+          <label for="field-css">CSS</label>
+          <textarea id="field-css" rows="12" placeholder="/* your CSS here */"></textarea>
+        </div>
+        <div class="field-row">
+          <label for="field-js">JavaScript</label>
+          <textarea id="field-js" rows="8" placeholder="// your JS here"></textarea>
+        </div>
+        <div class="actions">
+          <button id="btn-save-rule">Save</button>
+          <button id="btn-delete-rule">Delete</button>
+        </div>
+      </div>
+    </main>
+
+    <footer id="bottom-bar">
+      <section class="api-key-section">
+        <label for="field-api-key">Anthropic API Key</label>
+        <input id="field-api-key" type="password" placeholder="sk-ant-…">
+        <button id="btn-save-key">Save Key</button>
+        <span id="key-status"></span>
+      </section>
+      <section class="io-section">
+        <button id="btn-export">Export JSON</button>
+        <button id="btn-import">Import JSON</button>
+        <input id="import-file" type="file" accept=".json" class="hidden">
+      </section>
+    </footer>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>

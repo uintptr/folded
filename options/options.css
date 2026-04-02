@@ -1,0 +1,220 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  grid-template-rows: 1fr auto;
+  height: 100vh;
+}
+
+/* Sidebar */
+#sidebar {
+  grid-row: 1;
+  grid-column: 1;
+  background: #252526;
+  border-right: 1px solid #3e3e42;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #3e3e42;
+}
+
+.logo {
+  font-weight: 700;
+  font-size: 16px;
+  color: #4fc1ff;
+}
+
+#rule-list {
+  list-style: none;
+  flex: 1;
+  overflow-y: auto;
+}
+
+#rule-list li {
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #2a2d2e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+#rule-list li:hover { background: #2a2d2e; }
+#rule-list li.active { background: #37373d; color: #4fc1ff; }
+
+#rule-list li .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #3e3e42;
+  flex-shrink: 0;
+}
+
+#rule-list li.enabled .dot { background: #4fc1ff; }
+
+#btn-add {
+  margin: 10px;
+  padding: 8px;
+  background: transparent;
+  color: #4fc1ff;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
+}
+
+#btn-add:hover { background: #2a2d2e; }
+
+/* Editor */
+#editor {
+  grid-row: 1;
+  grid-column: 2;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+#editor-empty {
+  color: #6a6a6a;
+  margin: auto;
+  text-align: center;
+}
+
+#editor-form.hidden { display: none; }
+
+.field-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.toggle-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9d9d9d;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+  background: #252526;
+  color: #d4d4d4;
+  border: 1px solid #3e3e42;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 13px;
+  font-family: "SF Mono", "Fira Code", monospace;
+  resize: vertical;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: #4fc1ff;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+button {
+  padding: 7px 14px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#btn-save-rule {
+  background: #4fc1ff;
+  color: #1e1e1e;
+}
+
+#btn-save-rule:hover { background: #6dceff; }
+
+#btn-delete-rule {
+  background: #3e3e42;
+  color: #f48771;
+}
+
+#btn-delete-rule:hover { background: #505050; }
+
+/* Bottom bar */
+#bottom-bar {
+  grid-column: 1 / -1;
+  background: #252526;
+  border-top: 1px solid #3e3e42;
+  padding: 12px 20px;
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.api-key-section,
+.io-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.api-key-section label { white-space: nowrap; }
+
+#field-api-key {
+  width: 260px;
+  padding: 6px 8px;
+  font-family: "SF Mono", "Fira Code", monospace;
+}
+
+#btn-save-key {
+  background: #4fc1ff;
+  color: #1e1e1e;
+  padding: 6px 12px;
+}
+
+#btn-save-key:hover { background: #6dceff; }
+
+#key-status {
+  font-size: 12px;
+  color: #9d9d9d;
+}
+
+#btn-export, #btn-import {
+  background: #3e3e42;
+  color: #d4d4d4;
+  padding: 6px 12px;
+}
+
+#btn-export:hover, #btn-import:hover { background: #505050; }
+
+.hidden { display: none !important; }

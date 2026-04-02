@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Folded</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <span class="logo">Folded</span>
+      <span id="hostname" class="hostname"></span>
+      <button id="btn-settings" title="Settings">⚙</button>
+    </header>
+
+    <main id="state-idle">
+      <p id="no-key-warning" class="warning hidden">
+        No API key set. <a href="#" id="open-options">Open Settings</a>
+      </p>
+      <textarea id="prompt" placeholder="Describe what you want to change…"></textarea>
+      <p id="error-msg" class="error hidden"></p>
+      <button id="btn-generate">Generate</button>
+    </main>
+
+    <main id="state-generating" class="hidden">
+      <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+      <pre id="stream-output"></pre>
+      <button id="btn-cancel" class="btn-secondary">Cancel</button>
+    </main>
+
+    <main id="state-review" class="hidden">
+      <div class="preview-pill">● Preview active</div>
+      <div class="btn-row">
+        <button id="btn-save">Save</button>
+        <button id="btn-discard" class="btn-secondary">Discard</button>
+      </div>
+    </main>
+  </div>
+  <script src="../api/claude.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
