@@ -5,8 +5,6 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
-  release:
-    types: [created]
 
 jobs:
   build:
@@ -40,8 +38,18 @@ jobs:
           name: folded-${{ steps.version.outputs.version }}
           path: dist/folded-${{ steps.version.outputs.version }}.zip
 
-      - name: Attach to release
-        if: github.event_name == 'release'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: dist/folded-${{ steps.version.outputs.version }}.zip
+      - name: Release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          if gh release view "v$VERSION" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "Release v$VERSION already exists, skipping."
+          else
+            gh release create "v$VERSION" \
+              --title "v$VERSION" \
+              --notes "" \
+              --repo "$GITHUB_REPOSITORY" \
+              "dist/folded-$VERSION.zip"
+          fi
