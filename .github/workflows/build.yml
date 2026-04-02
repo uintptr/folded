@@ -32,9 +32,6 @@ jobs:
         id: version
         run: echo "version=$(jq -r .version manifest.json)" >> "$GITHUB_OUTPUT"
 
-      - name: Rename zip
-        run: mv dist/*.zip dist/folded-${{ steps.version.outputs.version }}.zip
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
