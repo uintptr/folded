@@ -1,0 +1,41 @@
+name: Build Firefox Extension
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install web-ext
+        run: npm install -g web-ext
+
+      - name: Lint
+        run: web-ext lint --source-dir .
+
+      - name: Build
+        run: web-ext build --source-dir . --artifacts-dir dist --overwrite-dest
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: folded-${{ github.sha }}
+          path: dist/*.zip
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
