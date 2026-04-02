@@ -28,14 +28,21 @@ jobs:
       - name: Build
         run: web-ext build --source-dir . --artifacts-dir dist --overwrite-dest
 
+      - name: Get version
+        id: version
+        run: echo "version=$(jq -r .version manifest.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Rename zip
+        run: mv dist/*.zip dist/folded-${{ steps.version.outputs.version }}.zip
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: folded-${{ github.sha }}
-          path: dist/*.zip
+          name: folded-${{ steps.version.outputs.version }}
+          path: dist/folded-${{ steps.version.outputs.version }}.zip
 
       - name: Attach to release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/*.zip
+          files: dist/folded-${{ steps.version.outputs.version }}.zip
