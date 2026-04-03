@@ -16,12 +16,10 @@ if (!window.__folded_injected) {
   }
 
   function applyPreviewJS(js) {
-    try {
-      // eslint-disable-next-line no-new-func
-      (new Function(js))();
-    } catch (e) {
-      console.warn('[Folded] preview JS error:', e);
-    }
+    const script = document.createElement('script');
+    script.textContent = js;
+    document.documentElement.appendChild(script);
+    script.remove();
   }
 
   function discardPreview() {
