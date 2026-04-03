@@ -39,7 +39,10 @@
 
     "browser_specific_settings": {
         "gecko": {
-            "id": "folded@uintptr"
+            "id": "folded@uintptr",
+            "data_collection_permissions": {
+                "required": ["websiteContent", "browsingActivity"]
+            }
         }
     }
 }
