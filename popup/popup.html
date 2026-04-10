@@ -11,6 +11,10 @@
     <header>
       <span class="logo">Folded</span>
       <span id="hostname" class="hostname"></span>
+      <label id="rule-toggle" class="rule-toggle hidden" title="Enable / disable rule for this site">
+        <input id="rule-toggle-input" type="checkbox">
+        <span class="rule-toggle-track"><span class="rule-toggle-thumb"></span></span>
+      </label>
       <button id="btn-settings" title="Settings">⚙</button>
     </header>
 
@@ -25,14 +29,21 @@
 
     <main id="state-generating" class="hidden">
       <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+      <div class="stream-header">
+        <span class="stream-dot"></span>
+        <span class="stream-label">Generating…</span>
+      </div>
       <pre id="stream-output"></pre>
       <button id="btn-cancel" class="btn-secondary">Cancel</button>
     </main>
 
     <main id="state-review" class="hidden">
-      <div class="preview-pill">● Preview active</div>
+      <div class="preview-banner">
+        <div class="preview-pill"><span class="pulse-dot"></span>Preview active</div>
+        <p class="preview-hint">Changes are live on this tab. Save to keep them or discard to revert.</p>
+      </div>
       <div class="btn-row">
-        <button id="btn-save">Save</button>
+        <button id="btn-save">Save changes</button>
         <button id="btn-discard" class="btn-secondary">Discard</button>
       </div>
     </main>

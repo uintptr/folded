@@ -29,6 +29,35 @@ function clearError() {
   if (el) { el.textContent = ''; el.classList.add('hidden'); }
 }
 
+// --- Rule toggle ---
+
+async function updateRuleToggle() {
+  const hostname = new URL(currentTab.url).hostname;
+  const rules    = await browser.storage.local.get('folded_rules')
+    .then(r => r.folded_rules || {});
+  const rule     = rules[hostname];
+  const toggle   = $('rule-toggle');
+
+  if (rule) {
+    toggle.classList.remove('hidden');
+    $('rule-toggle-input').checked = rule.enabled;
+  } else {
+    toggle.classList.add('hidden');
+  }
+}
+
+async function onRuleToggle() {
+  const hostname = new URL(currentTab.url).hostname;
+  const enabled  = $('rule-toggle-input').checked;
+  const rules    = await browser.storage.local.get('folded_rules')
+    .then(r => r.folded_rules || {});
+
+  if (!rules[hostname]) return;
+  rules[hostname] = { ...rules[hostname], enabled, updatedAt: Date.now() };
+  await browser.storage.local.set({ folded_rules: rules });
+  browser.runtime.sendMessage({ type: 'RULE_SAVED', hostname, rule: rules[hostname] });
+}
+
 // --- Snapshot ---
 
 async function getSnapshot(tabId) {
@@ -80,7 +109,9 @@ async function onGenerate() {
       signal:     abortController.signal,
       onChunk(chunk) {
         rawText += chunk;
-        $('stream-output').textContent = rawText;
+        const out = $('stream-output');
+        out.textContent = rawText;
+        out.scrollTop = out.scrollHeight;
 
         // Live-preview CSS as it streams in.
         const cssMatch = rawText.match(/```css\n([\s\S]*?)```/);
@@ -150,6 +181,7 @@ async function doSave(replaceExisting) {
 
   $('prompt').value = '';
   setState('idle');
+  updateRuleToggle();
 }
 
 async function onSave() {
@@ -171,12 +203,22 @@ async function onSave() {
 function onDiscard() {
   browser.tabs.sendMessage(currentTab.id, { type: 'DISCARD_PREVIEW' });
   setState('idle');
+  updateRuleToggle();
 }
 
 // --- Cancel ---
 
 function onCancel() {
   if (abortController) abortController.abort();
+}
+
+// --- Privileged page detection ---
+
+const PRIVILEGED_SCHEMES = ['about:', 'chrome:', 'moz-extension:', 'chrome-extension:', 'resource:', 'jar:'];
+
+function isPrivilegedUrl(url) {
+  if (!url) return true;
+  return PRIVILEGED_SCHEMES.some(s => url.startsWith(s));
 }
 
 // --- Init ---
@@ -187,8 +229,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (!currentTab) { window.close(); return; }
 
   let hostname = '';
-  try { hostname = new URL(tab.url).hostname; } catch {}
+  try { hostname = new URL(currentTab.url).hostname; } catch {}
   $('hostname').textContent = hostname;
+
+  if (isPrivilegedUrl(currentTab.url)) {
+    showError('This page cannot be modified by extensions.');
+    $('prompt').disabled      = true;
+    $('btn-generate').disabled = true;
+    setState('idle');
+    return;
+  }
 
   const apiKey = await browser.storage.local.get('folded_api_key')
     .then(r => r.folded_api_key || null);
@@ -209,6 +259,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('btn-save').addEventListener('click', onSave);
   $('btn-discard').addEventListener('click', onDiscard);
   $('btn-cancel').addEventListener('click', onCancel);
+  $('rule-toggle-input').addEventListener('change', onRuleToggle);
+
+  updateRuleToggle();
 
 window.addEventListener('unload', () => {
     const reviewing = !$('state-review').classList.contains('hidden');

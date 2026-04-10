@@ -1,4 +1,4 @@
-// options/options.js — Phase 3 (rule management) + Phase 6 (API key)
+// options/options.js
 
 let currentHostname = null;
 
@@ -9,6 +9,15 @@ function $(id) { return document.getElementById(id); }
 function showEditor(show) {
   $('editor-empty').classList.toggle('hidden', show);
   $('editor-form').classList.toggle('hidden', !show);
+}
+
+function showToast(msg, type = '') {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.classList.remove('hidden');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.add('hidden'), 2000);
 }
 
 // --- Rule list rendering ---
@@ -44,9 +53,9 @@ async function renderList() {
 
 function selectRule(hostname, rule) {
   currentHostname = hostname;
+  resetDeleteBtn();
   showEditor(true);
-  $('field-hostname').value = hostname;
-  $('field-hostname').disabled = true; // hostname is the key; don't allow rename
+  $('field-hostname').value   = hostname;
   $('field-enabled').checked  = rule.enabled;
   $('field-css').value        = rule.css || '';
   $('field-js').value         = rule.js  || '';
@@ -70,39 +79,71 @@ async function saveCurrentRule() {
   };
   rules[currentHostname] = updated;
   await browser.storage.local.set({ folded_rules: rules });
-
-  // Tell background to re-inject into matching open tabs.
   browser.runtime.sendMessage({ type: 'RULE_SAVED', hostname: currentHostname, rule: updated });
 
+  showToast('Rule saved', 'success');
   renderList();
+}
+
+function resetDeleteBtn() {
+  const btn = $('btn-delete-rule');
+  btn.textContent = 'Delete';
+  btn.classList.remove('btn-danger-confirm');
+  delete btn.dataset.confirming;
+  clearTimeout(btn._timer);
 }
 
 async function deleteCurrentRule() {
   if (!currentHostname) return;
-  if (!confirm(`Delete rule for ${currentHostname}?`)) return;
-  const rules = await loadRules();
-  delete rules[currentHostname];
-  await browser.storage.local.set({ folded_rules: rules });
-  currentHostname = null;
-  showEditor(false);
+  const btn = $('btn-delete-rule');
+
+  if (btn.dataset.confirming) {
+    // Second click — actually delete
+    resetDeleteBtn();
+    const rules = await loadRules();
+    delete rules[currentHostname];
+    await browser.storage.local.set({ folded_rules: rules });
+    currentHostname = null;
+    showEditor(false);
+    renderList();
+  } else {
+    // First click — ask for confirmation
+    btn.textContent = 'Confirm delete?';
+    btn.dataset.confirming = '1';
+    btn._timer = setTimeout(resetDeleteBtn, 3000);
+  }
+}
+
+// --- Add site (inline form) ---
+
+function addSite() {
+  $('btn-add').classList.add('hidden');
+  $('add-site-form').classList.remove('hidden');
+  $('new-hostname').value = '';
+  $('new-hostname').focus();
+}
+
+function confirmAddSite() {
+  const raw   = $('new-hostname').value.trim();
+  const clean = raw.replace(/^https?:\/\//, '').replace(/\/.*$/, '').trim();
+  if (!clean) return;
+  hideAddForm();
+  currentHostname = clean;
+  showEditor(true);
+  $('field-hostname').value  = clean;
+  $('field-enabled').checked = true;
+  $('field-css').value       = '';
+  $('field-js').value        = '';
   renderList();
 }
 
-// --- Add site ---
+function cancelAddSite() {
+  hideAddForm();
+}
 
-function addSite() {
-  const hostname = prompt('Enter hostname (e.g. example.com):');
-  if (!hostname) return;
-  const clean = hostname.trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
-  if (!clean) return;
-  currentHostname = clean;
-  showEditor(true);
-  $('field-hostname').value   = clean;
-  $('field-hostname').disabled = true;
-  $('field-enabled').checked  = true;
-  $('field-css').value        = '';
-  $('field-js').value         = '';
-  renderList();
+function hideAddForm() {
+  $('btn-add').classList.remove('hidden');
+  $('add-site-form').classList.add('hidden');
 }
 
 // --- Export / Import ---
@@ -124,7 +165,7 @@ async function importRules(file) {
   try {
     incoming = JSON.parse(text);
   } catch {
-    alert('Invalid JSON file.');
+    showToast('Invalid JSON file');
     return;
   }
   const rules = await loadRules();
@@ -134,7 +175,7 @@ async function importRules(file) {
     rules[hostname] = { ...rules[hostname], ...rule, hostname };
   }
   await browser.storage.local.set({ folded_rules: rules });
-  if (conflicts > 0) alert(`Imported. ${conflicts} rule(s) were merged with existing entries.`);
+  showToast(conflicts > 0 ? `Imported (${conflicts} merged)` : 'Imported', 'success');
   renderList();
 }
 
@@ -166,6 +207,13 @@ document.addEventListener('DOMContentLoaded', () => {
   loadApiKey();
 
   $('btn-add').addEventListener('click', addSite);
+  $('btn-add-confirm').addEventListener('click', confirmAddSite);
+  $('btn-add-cancel').addEventListener('click', cancelAddSite);
+  $('new-hostname').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') confirmAddSite();
+    if (e.key === 'Escape') cancelAddSite();
+  });
+
   $('btn-save-rule').addEventListener('click', saveCurrentRule);
   $('btn-delete-rule').addEventListener('click', deleteCurrentRule);
   $('btn-export').addEventListener('click', exportRules);
@@ -174,4 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.target.files[0]) importRules(e.target.files[0]);
   });
   $('btn-save-key').addEventListener('click', saveApiKey);
+  $('field-api-key').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveApiKey();
+  });
 });

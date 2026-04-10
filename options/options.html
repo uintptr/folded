@@ -10,24 +10,38 @@
     <aside id="sidebar">
       <div class="sidebar-header">
         <span class="logo">Folded</span>
+        <span class="logo-sub">Site rules</span>
       </div>
       <ul id="rule-list"></ul>
-      <button id="btn-add">+ Add site</button>
+      <div class="sidebar-footer">
+        <button id="btn-add">+ Add site</button>
+        <div id="add-site-form" class="hidden">
+          <input id="new-hostname" type="text" placeholder="example.com" autocomplete="off" spellcheck="false">
+          <div class="add-form-btns">
+            <button id="btn-add-confirm">Add</button>
+            <button id="btn-add-cancel" class="btn-ghost">Cancel</button>
+          </div>
+        </div>
+      </div>
     </aside>
 
     <main id="editor">
       <div id="editor-empty">
-        <p>Select a site from the left, or click <strong>+ Add site</strong>.</p>
+        <div class="empty-state">
+          <div class="empty-icon">⟡</div>
+          <p class="empty-title">No site selected</p>
+          <p class="empty-desc">Choose a site from the list, or click <strong>+ Add site</strong> to create a new rule.</p>
+        </div>
       </div>
 
       <div id="editor-form" class="hidden">
-        <div class="field-row">
-          <label for="field-hostname">Hostname</label>
-          <input id="field-hostname" type="text" placeholder="example.com">
-        </div>
-        <div class="field-row toggle-row">
-          <label for="field-enabled">Enabled</label>
-          <input id="field-enabled" type="checkbox" checked>
+        <div class="editor-host-row">
+          <input id="field-hostname" type="text" class="host-input" placeholder="example.com" disabled>
+          <label class="toggle-label" title="Enable or disable this rule">
+            <input id="field-enabled" type="checkbox" checked>
+            <span class="toggle-track"><span class="toggle-thumb"></span></span>
+            <span class="toggle-text">Active</span>
+          </label>
         </div>
         <div class="field-row">
           <label for="field-css">CSS</label>
@@ -39,25 +53,27 @@
         </div>
         <div class="actions">
           <button id="btn-save-rule">Save</button>
-          <button id="btn-delete-rule">Delete</button>
+          <button id="btn-delete-rule" class="btn-danger">Delete</button>
         </div>
       </div>
     </main>
 
     <footer id="bottom-bar">
       <section class="api-key-section">
-        <label for="field-api-key">Anthropic API Key</label>
+        <label for="field-api-key">API Key</label>
         <input id="field-api-key" type="password" placeholder="sk-ant-…">
-        <button id="btn-save-key">Save Key</button>
+        <button id="btn-save-key">Save</button>
         <span id="key-status"></span>
       </section>
       <section class="io-section">
-        <button id="btn-export">Export JSON</button>
-        <button id="btn-import">Import JSON</button>
+        <button id="btn-export" class="btn-ghost">Export</button>
+        <button id="btn-import" class="btn-ghost">Import</button>
         <input id="import-file" type="file" accept=".json" class="hidden">
       </section>
     </footer>
   </div>
+
+  <div id="toast" class="toast hidden"></div>
   <script src="options.js"></script>
 </body>
 </html>
