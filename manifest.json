@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Folded",
-    "version": "0.10.0",
+    "version": "0.11.0",
     "description": "Customize any website with natural language using Claude.",
 
     "permissions": ["storage", "tabs", "activeTab", "<all_urls>"],
@@ -26,7 +26,10 @@
 
     "browser_action": {
         "default_title": "Folded",
-        "default_icon": "icons/icon.svg"
+        "default_icon": {
+            "48": "icons/folded.jpg",
+            "96": "icons/folded.jpg"
+        }
     },
 
     "options_page": "options/options.html",
@@ -34,7 +37,8 @@
     "content_security_policy": "script-src 'self'; object-src 'self'; connect-src https://api.anthropic.com;",
 
     "icons": {
-        "48": "icons/icon.svg"
+        "48": "icons/folded.jpg",
+        "96": "icons/folded.jpg"
     },
 
     "browser_specific_settings": {

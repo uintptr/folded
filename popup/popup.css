@@ -46,10 +46,10 @@ header {
 }
 
 .logo {
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--accent);
-  letter-spacing: 0.4px;
+  height: 28px;
+  width: 28px;
+  border-radius: 6px;
+  object-fit: cover;
   flex-shrink: 0;
 }
 
