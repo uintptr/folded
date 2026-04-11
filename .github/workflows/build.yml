@@ -28,6 +28,18 @@ jobs:
       - name: Build
         run: web-ext build --source-dir . --artifacts-dir dist --overwrite-dest
 
+      - name: Sign
+        env:
+          AMO_API_KEY: ${{ secrets.AMO_API_KEY }}
+          AMO_API_SECRET: ${{ secrets.AMO_API_SECRET }}
+        run: |
+          web-ext sign \
+            --source-dir . \
+            --artifacts-dir dist \
+            --api-key="$AMO_API_KEY" \
+            --api-secret="$AMO_API_SECRET" \
+            --channel=unlisted
+
       - name: Get version
         id: version
         run: echo "version=$(jq -r .version manifest.json)" >> "$GITHUB_OUTPUT"
@@ -51,5 +63,6 @@ jobs:
               --title "v$VERSION" \
               --notes "" \
               --repo "$GITHUB_REPOSITORY" \
-              "dist/folded-$VERSION.zip"
+              dist/folded-$VERSION.zip \
+              dist/*.xpi
           fi
