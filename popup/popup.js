@@ -13,7 +13,27 @@ function setState(name) {
   for (const s of ['idle', 'generating', 'review']) {
     $(`state-${s}`).classList.toggle('hidden', s !== name);
   }
-  if (name === 'idle') clearError();
+  if (name === 'idle') {
+    clearError();
+    const prompt = $('prompt');
+    if (!prompt.disabled) prompt.focus();
+  }
+}
+
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+}
+
+function cleanStreamText(text) {
+  return text
+    .replace(/^```(?:css|javascript|js)?\r?\n?/gm, '')
+    .replace(/^```\r?\n?/gm, '')
+    .trim();
+}
+
+function updateGenerateBtn() {
+  $('btn-generate').disabled = $('prompt').value.trim().length === 0;
 }
 
 // --- Inline error display ---
@@ -37,12 +57,23 @@ async function updateRuleToggle() {
     .then(r => r.folded_rules || {});
   const rule     = rules[hostname];
   const toggle   = $('rule-toggle');
+  const ruleInfo = $('rule-info');
 
   if (rule) {
     toggle.classList.remove('hidden');
     $('rule-toggle-input').checked = rule.enabled;
+
+    const raw = rule.prompt || 'No prompt saved';
+    const label = raw.length > 48 ? raw.slice(0, 48) + '…' : raw;
+    ruleInfo.textContent = '';
+    const strong = document.createElement('strong');
+    strong.textContent = 'Existing rule';
+    ruleInfo.appendChild(strong);
+    ruleInfo.appendChild(document.createTextNode(' · ' + label));
+    ruleInfo.classList.remove('hidden');
   } else {
     toggle.classList.add('hidden');
+    ruleInfo.classList.add('hidden');
   }
 }
 
@@ -110,7 +141,7 @@ async function onGenerate() {
       onChunk(chunk) {
         rawText += chunk;
         const out = $('stream-output');
-        out.textContent = rawText;
+        out.textContent = cleanStreamText(rawText);
         out.scrollTop = out.scrollHeight;
 
         // Live-preview CSS as it streams in.
@@ -135,6 +166,13 @@ async function onGenerate() {
     }
 
     setState('review');
+
+    const cssLines = generatedCSS ? generatedCSS.split('\n').length : 0;
+    const jsLines  = generatedJS  ? generatedJS.split('\n').length  : 0;
+    const parts = [];
+    if (cssLines > 0) parts.push(`${cssLines} line${cssLines !== 1 ? 's' : ''} of CSS`);
+    if (jsLines  > 0) parts.push(`${jsLines} line${jsLines !== 1 ? 's' : ''} of JS`);
+    $('review-summary').textContent = parts.join(' · ');
   } catch (err) {
     if (err.name === 'AbortError') {
       browser.tabs.sendMessage(currentTab.id, { type: 'DISCARD_PREVIEW' });
@@ -180,8 +218,19 @@ async function doSave(replaceExisting) {
   browser.runtime.sendMessage({ type: 'RULE_SAVED', hostname, rule });
 
   $('prompt').value = '';
+  updateGenerateBtn();
   setState('idle');
-  updateRuleToggle();
+  await updateRuleToggle();
+
+  const confirm = $('save-confirm');
+  confirm.classList.remove('hidden');
+  // Force reflow so the transition fires.
+  confirm.getBoundingClientRect();
+  confirm.classList.add('visible');
+  setTimeout(() => {
+    confirm.classList.remove('visible');
+    setTimeout(() => confirm.classList.add('hidden'), 200);
+  }, 1500);
 }
 
 async function onSave() {
@@ -232,6 +281,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   try { hostname = new URL(currentTab.url).hostname; } catch {}
   $('hostname').textContent = hostname;
 
+  function openOptions(e) {
+    e.preventDefault();
+    browser.runtime.openOptionsPage();
+    window.close();
+  }
+
+  $('open-options').addEventListener('click', openOptions);
+  $('btn-settings').addEventListener('click', openOptions);
+
   if (isPrivilegedUrl(currentTab.url)) {
     showError('This page cannot be modified by extensions.');
     $('prompt').disabled      = true;
@@ -246,21 +304,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('no-key-warning').classList.remove('hidden');
   }
 
-  function openOptions(e) {
-    e.preventDefault();
-    browser.runtime.openOptionsPage();
-    window.close();
-  }
-
-  $('open-options').addEventListener('click', openOptions);
-  $('btn-settings').addEventListener('click', openOptions);
-
   $('btn-generate').addEventListener('click', onGenerate);
   $('btn-save').addEventListener('click', onSave);
   $('btn-discard').addEventListener('click', onDiscard);
   $('btn-cancel').addEventListener('click', onCancel);
   $('rule-toggle-input').addEventListener('change', onRuleToggle);
 
+  $('prompt').addEventListener('input', () => {
+    autoGrow($('prompt'));
+    updateGenerateBtn();
+  });
+  $('prompt').addEventListener('keydown', e => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') onGenerate();
+  });
+
+  updateGenerateBtn();
   updateRuleToggle();
 
 window.addEventListener('unload', () => {

@@ -67,8 +67,8 @@ browser.browserAction.onClicked.addListener(async (tab) => {
   const win = await browser.windows.create({
     url:    browser.runtime.getURL(`popup/popup.html?tabId=${tab.id}`),
     type:   'popup',
-    width:  420,
-    height: 260,
+    width:  400,
+    height: 290,
   });
   popupWindowId = win.id;
 });

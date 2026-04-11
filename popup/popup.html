@@ -15,36 +15,43 @@
         <input id="rule-toggle-input" type="checkbox">
         <span class="rule-toggle-track"><span class="rule-toggle-thumb"></span></span>
       </label>
-      <button id="btn-settings" title="Settings">⚙</button>
+      <button id="btn-settings" title="Settings">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+        </svg>
+      </button>
     </header>
 
     <main id="state-idle">
-      <p id="no-key-warning" class="warning hidden">
+      <p id="no-key-warning" class="notice notice-warn hidden">
         No API key set. <a href="#" id="open-options">Open Settings</a>
       </p>
+      <div id="rule-info" class="rule-info hidden"></div>
       <textarea id="prompt" placeholder="Describe what you want to change…"></textarea>
-      <p id="error-msg" class="error hidden"></p>
+      <p id="error-msg" class="notice notice-error hidden"></p>
+      <div id="save-confirm" class="save-confirm hidden">Rule saved</div>
       <button id="btn-generate">Generate</button>
     </main>
 
     <main id="state-generating" class="hidden">
       <div class="progress-bar"><div class="progress-bar-fill"></div></div>
-      <div class="stream-header">
-        <span class="stream-dot"></span>
-        <span class="stream-label">Generating…</span>
+      <div class="gen-status">
+        <span class="gen-dot"></span>
+        <span class="gen-label">Generating…</span>
       </div>
       <pre id="stream-output"></pre>
-      <button id="btn-cancel" class="btn-secondary">Cancel</button>
+      <button id="btn-cancel" class="btn-ghost">Cancel</button>
     </main>
 
     <main id="state-review" class="hidden">
-      <div class="preview-banner">
+      <div class="review-header">
         <div class="preview-pill"><span class="pulse-dot"></span>Preview active</div>
-        <p class="preview-hint">Changes are live on this tab. Save to keep them or discard to revert.</p>
+        <p id="review-summary" class="review-summary"></p>
       </div>
+      <p class="preview-hint">Live on this tab — save to keep or discard to revert.</p>
       <div class="btn-row">
+        <button id="btn-discard" class="btn-ghost">Discard</button>
         <button id="btn-save">Save changes</button>
-        <button id="btn-discard" class="btn-secondary">Discard</button>
       </div>
     </main>
   </div>
